@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FMFS · Manulife One Proposal Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito Sans',Verdana,sans-serif;background:#f4f6fb;color:#222;line-height:1.5;font-size:14px;}
+/* HEADER */
+.site-header{background:#fff;border-bottom:1px solid #eee;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:200;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-icon{width:32px;height:32px;background:#264283;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#db9247;font-weight:900;font-size:12px;flex-shrink:0;}
+.brand-name{font-weight:700;font-size:14px;color:#264283;}
+.brand-sub{font-size:11px;color:#888;}
+.broker-info{text-align:right;font-size:11px;color:#888;line-height:1.6;}
+.broker-info strong{color:#264283;font-size:12px;display:block;}
+/* CLIENT SELECTOR */
+.client-bar{background:#264283;padding:10px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.client-bar label{color:#adc4e8;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+.client-select{background:#2a3f6e;border:1px solid #264283;color:#dce8f8;font-size:13px;font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer;min-width:260px;}
+.client-select option{background:#264283;}
+.client-pill{background:#db9247;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;white-space:nowrap;}
+/* BANNER */
+.avail-banner{background:#fff9ed;border-bottom:1px solid #fde68a;padding:8px 28px;font-size:12px;color:#92400e;display:flex;align-items:center;gap:8px;}
+.avail-banner span{font-weight:700;color:#d97706;}
+/* TABS */
+.tabs-bar{background:#fff;border-bottom:2px solid #eee;display:flex;padding:0 28px;position:sticky;top:56px;z-index:199;}
+.tab-btn{padding:12px 18px;font-size:13px;font-weight:600;color:#666;background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;display:flex;align-items:center;gap:5px;margin-bottom:-2px;transition:color .15s,border-color .15s;}
+.tab-btn.active{color:#264283;border-bottom-color:#264283;}
+.tab-btn:hover:not(.active){color:#264283;background:#edf2fb;}
+/* PANELS */
+.tab-panel{display:none;padding:24px 28px;max-width:1060px;margin:0 auto;}
+.tab-panel.active{display:block;}
+/* CARDS */
+.card{background:#fff;border-radius:12px;padding:20px 24px;border:1px solid #eee;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+/* RATE CARD */
+.rate-card{background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:18px 22px;margin-bottom:14px;}
+.rate-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#166534;margin-bottom:10px;}
+.rate-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.rate-big{font-size:32px;font-weight:900;color:#16a34a;}
+.rate-vs{font-size:13px;color:#888;font-weight:600;}
+.rate-old{font-size:24px;font-weight:700;color:#dc2626;opacity:.7;}
+.rate-bank{font-size:11px;color:#888;margin-left:2px;}
+.rate-note{font-size:12px;color:#166534;margin-top:6px;}
+.what-btn{margin-left:auto;font-size:11px;color:#264283;cursor:pointer;background:#e8f0fb;padding:5px 12px;border-radius:20px;border:none;font-weight:600;white-space:nowrap;}
+.rate-explain{display:none;margin-top:12px;background:#fff;border-radius:8px;padding:10px 14px;font-size:12px;color:#555;line-height:1.7;border-left:3px solid #16a34a;}
+/* HERO */
+.hero-metric{background:linear-gradient(135deg,#e8f5e9,#f0fdf4);border:1px solid #86efac;border-radius:12px;padding:18px 22px;margin-bottom:14px;display:flex;align-items:center;gap:14px;}
+.hero-metric .trophy{font-size:28px;}
+.hero-metric strong{font-size:16px;color:#15803d;display:block;}
+.hero-metric .sub{font-size:11px;color:#555;margin-top:2px;}
+/* TIMELINE */
+.tl-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-align:center;margin:16px 0 8px;}
+.tl-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;}
+.tc{border-radius:10px;padding:14px;border:1px solid #eee;}
+.tc.m1{background:#f0fdf4;border-color:#86efac;}
+.tc.comp{background:#fef2f2;border-color:#fca5a5;}
+.tc.sav{background:#fdf3e7;border-color:#db9247;}
+.tc-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.tc.m1 .tc-lbl{color:#15803d;} .tc.comp .tc-lbl{color:#dc2626;} .tc.sav .tc-lbl{color:#b87430;}
+.tc-val{font-size:22px;font-weight:800;color:#222;}
+.tc-sub{font-size:10px;color:#888;margin-top:3px;}
+.tl-narrative{background:#f8f8f6;border-radius:8px;padding:12px 16px;font-size:12px;color:#555;line-height:1.7;margin-bottom:14px;}
+.tl-narrative b{color:#15803d;}
+/* METRICS */
+.metrics-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.mbox{background:#fff;border:1px solid #eee;border-radius:10px;padding:14px 16px;}
+.mbox .ml{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:4px;}
+.mbox .mv{font-size:24px;font-weight:800;color:#264283;}
+.mbox .ms{font-size:11px;color:#888;}
+.pbar-wrap{background:#e5e7eb;border-radius:4px;height:8px;margin-top:10px;overflow:hidden;}
+.pbar-fill{height:8px;border-radius:4px;background:linear-gradient(90deg,#264283,#db9247);}
+/* SLIDERS */
+.sliders-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:18px 22px;margin-bottom:14px;}
+.sl-title{font-size:12px;font-weight:700;color:#264283;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.sl-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.sl-row{margin-bottom:0;}
+.sl-row label{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#444;margin-bottom:4px;}
+.sl-row label span{font-weight:700;color:#264283;font-size:14px;}
+input[type=range]{width:100%;height:5px;-webkit-appearance:none;appearance:none;background:#e5e7eb;border-radius:4px;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#264283;cursor:pointer;}
+.sl-result{background:#edf2fb;border-radius:8px;padding:9px 14px;font-size:12px;color:#264283;margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.sl-result strong{font-size:14px;display:block;}
+/* CHART */
+.chart-section{margin-bottom:14px;}
+.chart-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:10px;}
+.chart-wrap{background:#fff;border:1px solid #eee;border-radius:12px;padding:18px;}
+canvas#balChart{width:100%;display:block;}
+.chart-legend{display:flex;gap:16px;margin-top:10px;}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#555;}
+.leg-dot{width:10px;height:10px;border-radius:50%;}
+/* HEAD TO HEAD */
+.hth-table{width:100%;border-collapse:collapse;font-size:13px;}
+.hth-table thead tr{background:#1c2f6a;}
+.hth-table thead td{color:#fff;padding:10px 12px;font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase;}
+.hth-table tbody tr{border-bottom:1px solid #f0f0f0;}
+.hth-table tbody tr:hover{background:#f9f7ff;}
+.hth-table td{padding:10px 12px;}
+.hth-m1{font-size:14px;font-weight:700;color:#15803d;text-align:right;}
+.hth-comp{font-size:14px;font-weight:600;color:#dc2626;text-align:right;}
+.hth-metric{font-size:12px;color:#555;}
+.badge-same{background:#e5e7eb;color:#555;font-size:10px;font-weight:700;padding:2px 7px;border-radius:12px;}
+.badge-win{background:#dcfce7;color:#15803d;font-size:10px;font-weight:700;padding:2px 7px;border-radius:12px;}
+/* HOW IT WORKS */
+.fd-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.fd-card{border-radius:14px;padding:24px 18px;text-align:center;border:1px solid #eee;}
+.fd-card.trad{background:#fef2f2;border-color:#fca5a5;}
+.fd-card.m1o{background:#f0fdf4;border-color:#86efac;}
+.fd-card .fd-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.fd-card.trad .fd-lbl{color:#dc2626;} .fd-card.m1o .fd-lbl{color:#16a34a;}
+.fd-card .fd-mo{font-size:24px;font-weight:700;}
+.fd-card.trad .fd-mo{color:#dc2626;} .fd-card.m1o .fd-mo{color:#16a34a;}
+.fd-card .fd-yr{font-size:40px;font-weight:900;line-height:1;}
+.fd-card.trad .fd-yr{color:#dc2626;} .fd-card.m1o .fd-yr{color:#16a34a;}
+.fd-card .fd-sub{font-size:11px;color:#888;margin-top:4px;}
+.fs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px;}
+.fs-box{border-radius:10px;padding:14px;border:1px solid #eee;background:#fff;}
+.fs-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:4px;}
+.fs-val{font-size:24px;font-weight:800;}
+.fs-val.grn{color:#16a34a;} .fs-val.pur{color:#b87430;}
+.fs-sub{font-size:11px;color:#888;margin-top:2px;}
+/* WALKTHROUGH */
+.wt-wrap{border:1px solid #eee;border-radius:12px;overflow:hidden;margin-bottom:20px;}
+.wt-head{background:#f8f8f6;padding:14px 20px;border-bottom:1px solid #eee;}
+.wt-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:8px;}
+.wt-dots{display:flex;gap:5px;}
+.wt-dot{width:9px;height:9px;border-radius:50%;background:#e5e7eb;cursor:pointer;transition:background .15s;}
+.wt-dot.active{background:#264283;}
+.wt-body{padding:24px 20px;}
+.step-badge{display:inline-flex;align-items:center;gap:4px;background:#edf2fb;color:#416ab3;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:12px;letter-spacing:.5px;}
+.step-icon{font-size:36px;margin-bottom:8px;}
+.step-h{font-size:20px;font-weight:800;color:#222;margin-bottom:6px;}
+.step-p{font-size:13px;color:#555;line-height:1.7;margin-bottom:16px;}
+.step-vis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px;}
+.sv-box{border-radius:10px;padding:14px;text-align:center;border:1px solid #eee;}
+.sv-box.org{background:#fff7ed;border-color:#fed7aa;} .sv-box.pur{background:#edf2fb;border-color:#adc4e8;} .sv-box.grn{background:#f0fdf4;border-color:#bbf7d0;}
+.sv-lbl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.sv-box.org .sv-lbl{color:#c2410c;} .sv-box.pur .sv-lbl{color:#416ab3;} .sv-box.grn .sv-lbl{color:#15803d;}
+.sv-val{font-size:20px;font-weight:800;}
+.sv-sub{font-size:10px;color:#888;margin-top:2px;}
+.step-next{width:100%;padding:12px;background:#264283;color:#db9247;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;}
+.step-next:hover{opacity:.85;} .step-next:disabled{background:#e5e7eb;color:#999;cursor:not-allowed;}
+.set-it{background:#1a2d5a;border-radius:12px;padding:20px 22px;color:#e2e8f0;margin-top:18px;}
+.set-it .si-t{font-size:15px;font-weight:800;color:#db9247;margin-bottom:6px;}
+.set-it .si-b{font-size:12px;line-height:1.7;}
+.set-it .si-pts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;}
+.set-it .si-pt{font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:5px;}
+.set-it .si-pt::before{content:"✓";color:#db9247;font-weight:700;}
+/* AMORTIZATION */
+.amort-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.amort-toolbar h3{font-size:14px;font-weight:700;color:#264283;}
+.cycles-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.cy-stat{background:#fff;border-radius:10px;padding:14px;border:1px solid #eee;}
+.cy-lbl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:4px;}
+.cy-val{font-size:20px;font-weight:800;color:#264283;}
+.cy-sub{font-size:10px;color:#888;}
+.amort-wrap{background:#fff;border:1px solid #eee;border-radius:10px;overflow:hidden;}
+.amort-table{width:100%;border-collapse:collapse;font-size:12px;}
+.amort-table thead{background:#264283;color:#fff;}
+.amort-table thead th{padding:9px 10px;font-size:10px;font-weight:600;letter-spacing:.5px;text-align:center;}
+.amort-table thead th.grp-m1{background:#1e3a2e;border-right:2px solid rgba(255,255,255,.15);}
+.amort-table thead th.grp-c{background:#3b1515;}
+.amort-table tbody tr:nth-child(even){background:#f9f9f9;}
+.amort-table tbody tr:hover{background:#f0eeff;}
+.amort-table td{padding:8px 10px;text-align:center;border-bottom:1px solid #f0f0f0;}
+.amort-table .yr-col{font-weight:700;color:#264283;text-align:left;font-size:12px;}
+.m1-bal{color:#15803d;font-weight:600;}
+.comp-bal{color:#dc2626;font-weight:600;}
+.adv-col{color:#264283;font-weight:700;}
+.row-free{background:#dcfce7!important;font-weight:700;}
+.amort-note{font-size:10px;color:#888;padding:8px 12px;background:#f9f9f9;}
+/* VALIDATION ROW */
+.val-row{background:#fff9ed!important;}
+.val-badge{background:#fef3c7;color:#92400e;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;}
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:7px;}
+.faq-item{background:#fff;border:1px solid #eee;border-radius:10px;overflow:hidden;}
+.faq-q{display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;font-size:13px;font-weight:600;color:#222;justify-content:space-between;}
+.faq-ql{display:flex;align-items:center;gap:10px;}
+.faq-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:#edf2fb;font-size:14px;flex-shrink:0;}
+.faq-arr{font-size:14px;color:#888;transition:transform .2s;}
+.faq-item.open .faq-arr{transform:rotate(180deg);}
+.faq-a{display:none;padding:0 18px 14px 56px;font-size:13px;color:#555;line-height:1.8;}
+.faq-item.open .faq-a{display:block;}
+/* FOOTER */
+.site-footer{background:#1a2d5a;color:#8d8989;text-align:center;padding:16px;font-size:11px;line-height:1.8;}
+.site-footer a{color:#db9247;text-decoration:none;font-weight:700;}
+/* VALIDATION PANEL */
+.val-panel{background:#fff9ed;border:1px solid #fde68a;border-radius:10px;padding:14px 18px;margin-bottom:14px;font-size:12px;}
+.val-panel h4{color:#92400e;font-size:12px;font-weight:700;margin-bottom:8px;}
+.val-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.val-item{text-align:center;}
+.val-item .vi-lbl{font-size:10px;color:#888;margin-bottom:2px;}
+.val-item .vi-off{font-size:13px;font-weight:700;}
+.vi-off.good{color:#15803d;} .vi-off.ok{color:#d97706;} .vi-off.warn{color:#dc2626;}
+@media(max-width:680px){
+  .tl-grid,.fd-grid,.fs-grid,.metrics-row,.sl-grid,.cycles-grid{grid-template-columns:1fr;}
+  .tab-btn{font-size:11px;padding:10px 8px;}
+  .tab-panel{padding:14px;}
+  .client-bar{padding:8px 14px;}
+  .site-header{padding:0 14px;}
+  .broker-info{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="brand">
+    <div class="brand-icon" style="background:#264283;color:#db9247;font-size:10px;font-weight:900;letter-spacing:-0.5px;">8T</div>
+    <div>
+      <div class="brand-name" style="color:#264283;">Patrick Festa · 8Twelve Mortgage</div>
+      <div class="brand-sub">Manulife One Proposal Engine · v2.0</div>
+    </div>
+  </div>
+  <div class="broker-info">
+    <strong>Patrick Festa</strong>
+    patrick@fmfs.ca · MeetWithFesta.ca
+  </div>
+</header>
+
+<!-- CLIENT SELECTOR -->
+<div class="client-bar">
+  <label>📋 Client Scenario:</label>
+  <select class="client-select" id="clientSelect" onchange="switchClient(this.value)">
+    <option value="marlye">Marlye Monfiston — Switch/Renewal · Ottawa ON · $312,000</option>
+    <option value="catalina">Rosa Catalina Camargo Palacios — Refinance · North York ON · $307,500</option>
+    <option value="chantelle">Chantelle Lewis — Purchase · Longueuil QC · $385,000</option>
+    <option value="pitter">Martin & Jamelia Pitter — Refinance · Brantford ON · $560,950 ⚠ Est.</option>
+    <option value="davey">Natalie Davey & Casert Bernard — Refinance · Brantford ON · $659,200 ⚠ Est.</option>
+    <option value="abergel">Jason Abergel — Switch to M1 · Rental Property · $161,417</option>
+    <option value="bignell">Ryan Bignell & Maria J. Medina Diaz — Switch to M1 · $318,000</option>
+  </select>
+  <div class="client-pill" id="deal-pill">Switch / Renewal</div>
+</div>
+
+<!-- AVAILABILITY BANNER -->
+<div class="avail-banner">
+  ⏰ Analysis available until <span id="expiry-date">June 25, 2026</span> &nbsp;·&nbsp;
+  Ref # <span id="ref-num">1099521</span> &nbsp;·&nbsp;
+  <span id="source-label">Source: Manulife Bank Official Calculator</span>
+</div>
+<!-- ESTIMATED DATA BANNER -->
+<div id="est-banner" style="display:none;background:#fff7ed;border-bottom:2px solid #db9247;padding:9px 28px;font-size:12.5px;color:#92400e;display:none;align-items:center;gap:8px;">
+  ⚠️ <strong>FMFS Computed Estimates</strong> — Manulife official calculator report not yet received. Income &amp; expense assumptions from commitment letter. Projections will be updated once the official report is provided. These numbers are for internal planning only.
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('calculator',this)">📊 Calculator</button>
+  <button class="tab-btn" onclick="switchTab('howitworks',this)">❓ How It Works</button>
+  <button class="tab-btn" onclick="switchTab('amortization',this)">📋 Amortization</button>
+  <button class="tab-btn" onclick="switchTab('validation',this)">🔬 Stress Test</button>
+  <button class="tab-btn" onclick="switchTab('faq',this)">💬 FAQ</button>
+</div>
+
+
+<!-- ══════════════════════ TAB 1: CALCULATOR ══════════════════════ -->
+<div class="tab-panel active" id="tab-calculator">
+
+  <!-- Sliders -->
+  <div class="sliders-card">
+    <div class="sl-title">⚙️ Adjust inputs — results update live</div>
+    <div class="sl-grid">
+      <div class="sl-row">
+        <label>Monthly net income <span id="lbl-income">$6,000</span></label>
+        <input type="range" id="sl-income" min="2000" max="15000" step="100" value="6000" oninput="onSlider()">
+      </div>
+      <div class="sl-row">
+        <label>Monthly living expenses <span id="lbl-exp">$2,200</span></label>
+        <input type="range" id="sl-exp" min="1000" max="8000" step="100" value="2200" oninput="onSlider()">
+      </div>
+    </div>
+    <div class="sl-result">
+      <div>
+        <div style="font-size:10px;color:#416ab3;font-weight:700;letter-spacing:.5px;text-transform:uppercase;">Monthly surplus attacking HELOC</div>
+        <strong id="lbl-surplus" style="color:#264283;">$1,463</strong>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#416ab3;font-weight:700;letter-spacing:.5px;text-transform:uppercase;">Estimated HELOC payoff</div>
+        <strong id="lbl-heloc-payoff" style="color:#264283;">~25 months</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rate Card -->
+  <div class="rate-card">
+    <div class="rate-label">🔽 Net Effective Interest Rate</div>
+    <div class="rate-row">
+      <div>
+        <div class="rate-big" id="rate-m1">4.77%</div>
+        <div style="font-size:11px;color:#16a34a;font-weight:600;">Manulife One (blended)</div>
+      </div>
+      <div class="rate-vs">vs</div>
+      <div>
+        <div class="rate-old" id="rate-comp">4.59%</div>
+        <div class="rate-bank" id="rate-comp-lbl">CMLS (current)</div>
+      </div>
+      <button class="what-btn" onclick="toggleRateNote()">What does this mean? ▾</button>
+    </div>
+    <div class="rate-explain" id="rate-explain">
+      These rates look similar — but the <strong>mechanism is completely different</strong>. Your comparison mortgage charges interest on the full balance every single day. Manulife One charges interest on whatever the Main Account balance is at end of each day — and your paycheque hits that account every two weeks, driving it toward zero. You pay interest on a shrinking balance all month, not a static one. The result: you save <strong id="rate-explain-saved">thousands</strong> even when the posted rates look close.
+    </div>
+    <div class="rate-note" id="rate-note-line">On your mortgage, you're saving <strong id="rate-note-saved">$31,684</strong> in total interest over the life of the mortgage.</div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero-metric">
+    <div class="trophy">🏆</div>
+    <div>
+      <strong id="hero-text">Marlye pays off her mortgage 16 months faster and saves $31,684 in interest</strong>
+      <div class="sub" id="hero-sub">Net savings · Source: Manulife Bank Official Calculator · FMFS Analysis</div>
+    </div>
+  </div>
+
+  <!-- Freedom Timeline -->
+  <div class="tl-label">📅 MORTGAGE FREEDOM TIMELINE</div>
+  <div class="tl-grid">
+    <div class="tc m1">
+      <div class="tc-lbl">✅ Manulife One</div>
+      <div class="tc-val" id="tc-m1">12 yrs</div>
+      <div class="tc-sub" id="tc-m1-sub">Debt-free: ~June 2038</div>
+    </div>
+    <div class="tc comp">
+      <div class="tc-lbl" id="tc-comp-lbl">🏛 CMLS</div>
+      <div class="tc-val" id="tc-comp">13 yrs 4 mo</div>
+      <div class="tc-sub" id="tc-comp-sub">Debt-free: ~Oct 2039</div>
+    </div>
+    <div class="tc sav">
+      <div class="tc-lbl">💰 Interest Saved</div>
+      <div class="tc-val" id="tc-saved">$31,684</div>
+      <div class="tc-sub" id="tc-saved-sub">Stays in your pocket</div>
+    </div>
+  </div>
+  <div class="tl-narrative" id="tl-narrative">
+    Marlye pays off her mortgage <b>16 months faster</b> and saves <b>$31,684 in total interest</b> by switching to Manulife One now rather than waiting for the CMLS renewal in May 2028.
+  </div>
+
+  <!-- Metrics -->
+  <div class="metrics-row">
+    <div class="mbox">
+      <div class="ml">📈 Time Saved</div>
+      <div class="mv" id="m-time">1.3 yrs</div>
+      <div class="ms" id="m-time-sub">faster to mortgage freedom</div>
+      <div class="pbar-wrap"><div class="pbar-fill" id="pb-time" style="width:10%"></div></div>
+    </div>
+    <div class="mbox">
+      <div class="ml">⚡ Payoff Acceleration</div>
+      <div class="mv" id="m-accel">10%</div>
+      <div class="ms" id="m-accel-sub">faster than comparison</div>
+      <div class="pbar-wrap"><div class="pbar-fill" id="pb-accel" style="width:10%"></div></div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="chart-section">
+    <div class="chart-title">📉 Balance over time — Manulife One vs comparison</div>
+    <div class="chart-wrap">
+      <canvas id="balChart" height="240"></canvas>
+      <div class="chart-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#264283"></div> Manulife One</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#dc2626"></div> <span id="chart-comp-label">CMLS</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Head-to-Head -->
+  <div class="card">
+    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:12px;">HEAD-TO-HEAD COMPARISON</div>
+    <table class="hth-table">
+      <thead>
+        <tr>
+          <td>Metric</td>
+          <td style="text-align:right">Manulife One</td>
+          <td style="text-align:right" id="hth-comp-header">CMLS</td>
+        </tr>
+      </thead>
+      <tbody id="hth-body"></tbody>
+    </table>
+  </div>
+
+</div><!-- /calculator -->
+
+
+<!-- ══════════════════════ TAB 2: HOW IT WORKS ══════════════════════ -->
+<div class="tab-panel" id="tab-howitworks">
+
+  <div class="fd-grid">
+    <div class="fd-card trad">
+      <div class="fd-lbl">🏛 Traditional / Current</div>
+      <div style="font-size:24px;margin-bottom:4px;">📅</div>
+      <div class="fd-mo" id="fd-comp-mo">Oct</div>
+      <div class="fd-yr" id="fd-comp-yr">2039</div>
+      <div class="fd-sub" id="fd-comp-sub">Without switching</div>
+    </div>
+    <div class="fd-card m1o">
+      <div class="fd-lbl">✅ Manulife One</div>
+      <div style="font-size:24px;margin-bottom:4px;">📅</div>
+      <div class="fd-mo" id="fd-m1-mo">Jun</div>
+      <div class="fd-yr" id="fd-m1-yr">2038</div>
+      <div class="fd-sub" id="fd-m1-sub">16 months earlier</div>
+    </div>
+  </div>
+
+  <div class="fs-grid">
+    <div class="fs-box">
+      <div class="fs-lbl">Time saved</div>
+      <div class="fs-val grn" id="fs-time">1.3 yrs <span style="font-size:14px;font-weight:600;">faster</span></div>
+      <div class="fs-sub" id="fs-time-sub">mortgage freedom</div>
+    </div>
+    <div class="fs-box">
+      <div class="fs-lbl">Interest saved</div>
+      <div class="fs-val pur" id="fs-saved">$31,684</div>
+      <div class="fs-sub">stays in your pocket</div>
+    </div>
+  </div>
+
+  <div class="wt-wrap">
+    <div class="wt-head">
+      <div class="wt-title">HOW THE MANULIFE ONE STRATEGY WORKS</div>
+      <div class="wt-dots" id="wt-dots"></div>
+    </div>
+    <div class="wt-body" id="wt-body"></div>
+  </div>
+
+  <div class="set-it">
+    <div class="si-t">♻️ Set It and Forget It</div>
+    <div class="si-b">Paycheque goes in. Bills come out. <strong style="color:#db9247">Exactly like before.</strong><br>The only difference is <strong style="color:#db9247">where your money lives</strong> between payday and when you spend it.</div>
+    <div class="si-pts">
+      <div class="si-pt">Fully automated</div>
+      <div class="si-pt">No lifestyle changes</div>
+      <div class="si-pt">No extra payments needed</div>
+      <div class="si-pt">Works 24/7</div>
+    </div>
+  </div>
+
+</div><!-- /howitworks -->
+
+
+<!-- ══════════════════════ TAB 3: AMORTIZATION ══════════════════════ -->
+<div class="tab-panel" id="tab-amortization">
+
+  <div class="card" style="margin-bottom:16px;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#888;margin-bottom:14px;">♻️ Readvance / Sweep Summary</div>
+    <div class="cycles-grid" id="cycles-grid"></div>
+  </div>
+
+  <div class="amort-toolbar">
+    <h3>📋 Side-by-Side Amortization — Manulife Official Data</h3>
+  </div>
+  <div class="amort-wrap">
+    <table class="amort-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="background:#264283;text-align:left;min-width:52px;">Year</th>
+          <th colspan="3" class="grp-m1">✅ Manulife One</th>
+          <th colspan="3" class="grp-c">🏛 <span id="amort-comp-header">Comparison</span></th>
+          <th rowspan="2" style="background:#1c2f6a;">M1 Advantage</th>
+        </tr>
+        <tr>
+          <th class="grp-m1">Balance</th>
+          <th class="grp-m1">Interest</th>
+          <th class="grp-m1" style="border-right:2px solid rgba(255,255,255,.15)">Cum. Int.</th>
+          <th class="grp-c">Balance</th>
+          <th class="grp-c">Interest</th>
+          <th class="grp-c">Cum. Int.</th>
+        </tr>
+      </thead>
+      <tbody id="amort-body"></tbody>
+    </table>
+    <div class="amort-note" id="amort-note"></div>
+  </div>
+
+</div><!-- /amortization -->
+
+
+<!-- ══════════════════════ TAB 4: STRESS TEST ══════════════════════ -->
+<div class="tab-panel" id="tab-validation">
+
+  <div class="card" style="margin-bottom:14px;">
+    <div style="font-size:13px;font-weight:700;color:#264283;margin-bottom:6px;">🔬 What This Tab Does</div>
+    <div style="font-size:12px;color:#555;line-height:1.7;">
+      This tab runs FMFS's independent math engine and compares the results against Manulife's official calculator output. If the numbers align within 5–10%, the engine is trustworthy for new clients where no official report exists yet.
+    </div>
+  </div>
+
+  <div class="val-panel" id="val-panel">
+    <h4>📊 Engine vs Official — <span id="val-client-name">Marlye Monfiston</span></h4>
+    <div class="val-grid" id="val-grid"></div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px;">
+    <div style="font-size:12px;font-weight:700;color:#264283;margin-bottom:12px;">Year-by-Year: FMFS Engine vs Manulife Official</div>
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead>
+        <tr style="background:#264283;color:#fff;">
+          <th style="padding:8px 10px;text-align:left;">Year</th>
+          <th style="padding:8px 10px;text-align:right;">Manulife Balance</th>
+          <th style="padding:8px 10px;text-align:right;">FMFS Computed</th>
+          <th style="padding:8px 10px;text-align:right;">Difference</th>
+          <th style="padding:8px 10px;text-align:right;">Manulife Int.</th>
+          <th style="padding:8px 10px;text-align:right;">FMFS Int.</th>
+        </tr>
+      </thead>
+      <tbody id="val-table-body"></tbody>
+    </table>
+    </div>
+    <div style="font-size:10px;color:#888;margin-top:8px;padding-top:8px;border-top:1px solid #f0f0f0;">
+      FMFS engine uses Canadian semi-annual compounding for sub-accounts, monthly compounding for HELOC. Manulife's model includes a $16.95/month admin fee and proprietary sweep timing. Minor variance expected.
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:12px;font-weight:700;color:#264283;margin-bottom:10px;">All Clients at a Glance</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead>
+        <tr style="background:#f8f8f6;">
+          <th style="padding:8px 10px;text-align:left;font-weight:600;color:#555;border-bottom:1px solid #eee;">Client</th>
+          <th style="padding:8px 10px;text-align:right;font-weight:600;color:#555;border-bottom:1px solid #eee;">M1 Balance</th>
+          <th style="padding:8px 10px;text-align:right;font-weight:600;color:#555;border-bottom:1px solid #eee;">Comparison</th>
+          <th style="padding:8px 10px;text-align:right;font-weight:600;color:#555;border-bottom:1px solid #eee;">M1 Years</th>
+          <th style="padding:8px 10px;text-align:right;font-weight:600;color:#555;border-bottom:1px solid #eee;">Comp Years</th>
+          <th style="padding:8px 10px;text-align:right;font-weight:600;color:#555;border-bottom:1px solid #eee;">Interest Saved</th>
+          <th style="padding:8px 10px;text-align:right;font-weight:600;color:#555;border-bottom:1px solid #eee;">Deal</th>
+        </tr>
+      </thead>
+      <tbody id="all-clients-body"></tbody>
+    </table>
+  </div>
+
+</div><!-- /validation -->
+
+
+<!-- ══════════════════════ TAB 5: FAQ ══════════════════════ -->
+<div class="tab-panel" id="tab-faq">
+  <div class="faq-list" id="faq-list"></div>
+</div>
+
+<!-- FOOTER -->
+<div class="site-footer">
+  Prepared by <a href="mailto:patrick@fmfs.ca">Patrick Festa · 8Twelve Mortgage</a> · Mortgage Agent | Life Insurance Agent | Mutual Fund Agent<br>
+  <em>For illustrative purposes only. Based on Manulife Bank Official Calculator outputs. Not a guarantee of results. Rates subject to change. Consult your accountant for tax implications.</em>
+</div>
+
+
+<!-- ══════════════════════ JAVASCRIPT ══════════════════════ -->
+<script>
+// ════════════════════════════════════════════════════════
+//  CLIENT DATA — Official Manulife Calculator outputs
+// ════════════════════════════════════════════════════════
+const CLIENTS = {
+  marlye: {
+    name: "Marlye Monfiston", property: "Ottawa, ON",
+    refNum: "1099521", expiry: "June 25, 2026", dealType: "Switch / Renewal",
+    m1Total: 312000, helocBalance: 37000, helocRate: 0.0495,
+    subs: [
+      { name:"Sub-1", bal:58500, rate:0.0474, pmt:497.08, readv:false },
+      { name:"Sub-2 ⭐", bal:216500, rate:0.0474, pmt:1839.62, readv:true }
+    ],
+    income: 6000, expenses: 2200,
+    comp: { label:"CMLS @ 4.59%", bal:305052, rate:0.0459, pmt:2626 },
+    official: { m1Int:70833, m1Yrs:12, compInt:102517, compYrs:13.3, saved:31684 },
+    m1Sch: [
+      {yr:1,bal:284747,int:14564},{yr:2,bal:252374,int:13024},{yr:3,bal:218385,int:11407},
+      {yr:4,bal:182698,int:9710},{yr:5,bal:145229,int:7928},{yr:6,bal:105889,int:6057},
+      {yr:7,bal:64585,int:4092},{yr:8,bal:21218,int:2029},{yr:9,bal:15081,int:859},
+      {yr:10,bal:10297,int:631},{yr:11,bal:5274,int:392},{yr:12,bal:0,int:135}
+    ],
+    compSch: [
+      {yr:1,bal:294261},{yr:2,bal:275699},{yr:3,bal:256275},{yr:4,bal:235949},
+      {yr:5,bal:214679},{yr:6,bal:192422},{yr:7,bal:169132},{yr:8,bal:144760},
+      {yr:9,bal:119358},{yr:10,bal:92666},{yr:11,bal:64639},{yr:12,bal:35115},
+      {yr:13,bal:3874},{yr:14,bal:0}
+    ],
+    freedomM1: {mo:"Jun", yr:2038}, freedomComp: {mo:"Oct", yr:2039},
+    narrative: `Marlye pays off her mortgage <b>16 months faster</b> and saves <b>$31,684 in total interest</b> by switching to Manulife One now rather than waiting for the CMLS renewal in May 2028.`,
+    cycles: [
+      {label:"♻ Cycles", val:"1–2", sub:"sweep events"},
+      {label:"⏱ HELOC Payoff", val:"~25 mo", sub:"per cycle"},
+      {label:"$ Lump Sum", val:"$37K+", sub:"swept to Sub-2"},
+      {label:"📅 Debt-Free", val:"12 yrs", sub:"total payoff"}
+    ]
+  },
+
+  catalina: {
+    name: "Rosa Catalina Camargo Palacios", property: "North York, ON",
+    refNum: "1095985", expiry: "June 30, 2026", dealType: "Refinance",
+    m1Total: 307500, helocBalance: 247500, helocRate: 0.0495,
+    subs: [
+      { name:"Sub-1", bal:60000, rate:0.0469, pmt:338.46, readv:false }
+    ],
+    income: 8300, expenses: 4000,
+    comp: { label:"Previous Mortgage @ 3.35%", bal:300000, rate:0.0335, pmt:1842 },
+    official: { m1Int:53126, m1Yrs:7, compInt:99229, compYrs:18.1, saved:46103 },
+    m1Sch: [
+      {yr:1,bal:264840,int:13724},{yr:2,bal:225286,int:11843},{yr:3,bal:183757,int:9868},
+      {yr:4,bal:140155,int:7794},{yr:5,bal:94375,int:5617},{yr:6,bal:46310,int:3332},
+      {yr:7,bal:0,int:949}
+    ],
+    compSch: [
+      {yr:1,bal:287677},{yr:2,bal:274938},{yr:3,bal:261769},{yr:4,bal:248155},
+      {yr:5,bal:234081},{yr:6,bal:219531},{yr:7,bal:204490},{yr:8,bal:188941},
+      {yr:9,bal:172867},{yr:10,bal:156250},{yr:11,bal:139071},{yr:12,bal:121312},
+      {yr:13,bal:102953},{yr:14,bal:83974},{yr:15,bal:64354},{yr:16,bal:44071},
+      {yr:17,bal:23103},{yr:18,bal:1427},{yr:19,bal:0}
+    ],
+    freedomM1: {mo:"Jun", yr:2033}, freedomComp: {mo:"Jun", yr:2044},
+    narrative: `Catalina pays off her mortgage <b>11 years faster</b> and saves <b>$46,103 in total interest</b>. Her large HELOC ($247,500) acts as a powerful buffer — her entire paycheque attacks it daily, slashing her effective rate.`,
+    cycles: [
+      {label:"♻ Structure", val:"1 Sub", sub:"non-readvanceable"},
+      {label:"⏱ HELOC Payoff", val:"~72 mo", sub:"6 years"},
+      {label:"$ Available After", val:"$247K", sub:"draw to pay Sub-1"},
+      {label:"📅 Debt-Free", val:"7 yrs", sub:"total payoff"}
+    ]
+  },
+
+  chantelle: {
+    name: "Chantelle Lewis", property: "Longueuil, QC",
+    refNum: "1091634", expiry: "March 31, 2026", dealType: "Purchase",
+    m1Total: 385000, helocBalance: 1, helocRate: 0.0495,
+    subs: [
+      { name:"Sub-1", bal:65500, rate:0.0454, pmt:331.79, readv:false },
+      { name:"Sub-2 ⭐", bal:319499, rate:0.0454, pmt:1618.41, readv:true }
+    ],
+    income: 8000, expenses: 4000,
+    comp: { label:"Traditional Mortgage @ 4.54%", bal:385000, rate:0.0454, pmt:1951 },
+    official: { m1Int:109482, m1Yrs:15, compInt:316753, compYrs:30, saved:207270 },
+    m1Sch: [
+      {yr:1,bal:359871,int:18298},{yr:2,bal:328894,int:16819},{yr:3,bal:296364,int:15267},
+      {yr:4,bal:262203,int:13636},{yr:5,bal:226330,int:11924},{yr:6,bal:188659,int:10125},
+      {yr:7,bal:149099,int:8237},{yr:8,bal:107557,int:6254},{yr:9,bal:63931,int:4172},
+      {yr:10,bal:20277,int:1993},{yr:11,bal:16627,int:956},{yr:12,bal:12784,int:764},
+      {yr:13,bal:8739,int:562},{yr:14,bal:4481,int:349},{yr:15,bal:0,int:126}
+    ],
+    compSch: [
+      {yr:1,bal:378777},{yr:2,bal:372267},{yr:3,bal:365460},{yr:4,bal:358339},
+      {yr:5,bal:350892},{yr:6,bal:343102},{yr:7,bal:334955},{yr:8,bal:326434},
+      {yr:9,bal:317522},{yr:10,bal:308200},{yr:11,bal:298451},{yr:12,bal:288253},
+      {yr:13,bal:277588},{yr:14,bal:266433},{yr:15,bal:254765},{yr:16,bal:242562},
+      {yr:17,bal:229799},{yr:18,bal:216449},{yr:19,bal:202487},{yr:20,bal:187884},
+      {yr:21,bal:172610},{yr:22,bal:156634},{yr:23,bal:139926},{yr:24,bal:122450},
+      {yr:25,bal:104171},{yr:26,bal:85054},{yr:27,bal:65058},{yr:28,bal:44145},
+      {yr:29,bal:22271},{yr:30,bal:0}
+    ],
+    freedomM1: {mo:"Feb", yr:2041}, freedomComp: {mo:"Feb", yr:2056},
+    narrative: `Chantelle cuts her mortgage in <b>half</b> — 15 years instead of 30. She saves <b>$207,270 in interest</b>. With a $4,000/month surplus and a readvanceable Sub-2, the compounding effect of each sweep cycle is dramatic.`,
+    cycles: [
+      {label:"♻ Cycles", val:"4–6", sub:"sweep events"},
+      {label:"⏱ Sub-2 Paydown", val:"15 yrs", sub:"accelerated"},
+      {label:"$ Total Saved", val:"$207K", sub:"in interest"},
+      {label:"📅 Debt-Free", val:"15 yrs", sub:"vs 30 yrs traditional"}
+    ]
+  },
+
+  // ─────────────────────────────────────────────────────────────────
+  //  MARTIN & JAMELIA PITTER  |  Ref #1075969  |  Brantford ON
+  //  ⚠ FMFS Computed Estimates — Manulife report not yet provided
+  // ─────────────────────────────────────────────────────────────────
+  pitter: {
+    name: "Martin & Jamelia Pitter",
+    property: "Brantford, ON",
+    refNum: "1075969",
+    expiry: "May 31, 2028",
+    dealType: "Refinance",
+    estimated: true,
+    m1Total: 560950,
+    helocBalance: 1,
+    helocRate: 0.0595,
+    subs: [
+      { name:"Sub-1",    bal:129450, rate:0.0519, payment:705.62,  readvanceable:false },
+      { name:"Sub-2 ⭐", bal:431499, rate:0.0519, payment:2352.05, readvanceable:true  }
+    ],
+    income: 7000,
+    expenses: 3000,
+    comp: { label:"Standard Mortgage est. @ 5.25%", bal:560950, rate:0.0525, pmt:3078 },
+    official: {
+      m1Int:135735, m1Yrs:9, compInt:547123, compYrs:30, saved:411388
+    },
+    m1Sch: [
+      {yr:1,bal:505076,int:28818},{yr:2,bal:445981,int:25596},{yr:3,bal:383436,int:22147},
+      {yr:4,bal:317324,int:18580},{yr:5,bal:247704,int:15073},{yr:6,bal:174604,int:11592},
+      {yr:7,bal:97881,int:7969},{yr:8,bal:44290,int:4373},{yr:9,bal:0,int:1586}
+    ],
+    compSch: [
+      {yr:1,bal:552959},{yr:2,bal:544542},{yr:3,bal:535678},{yr:4,bal:526343},
+      {yr:5,bal:516511},{yr:6,bal:506155},{yr:7,bal:495250},{yr:8,bal:483764},
+      {yr:9,bal:471667},{yr:10,bal:458927},{yr:11,bal:445509},{yr:12,bal:431377},
+      {yr:13,bal:416494},{yr:14,bal:400819},{yr:15,bal:384311},{yr:16,bal:366924},
+      {yr:17,bal:348613},{yr:18,bal:329327},{yr:19,bal:309016},{yr:20,bal:287625},
+      {yr:21,bal:265095},{yr:22,bal:241368},{yr:23,bal:216378},{yr:24,bal:190059},
+      {yr:25,bal:162341},{yr:26,bal:133148},{yr:27,bal:102402},{yr:28,bal:70021},
+      {yr:29,bal:35917},{yr:30,bal:0}
+    ],
+    freedomM1: {mo:"May", yr:2034}, freedomComp: {mo:"May", yr:2055},
+    narrative: `The Pitters eliminate their <b>$560,950 mortgage in just 9 years</b> instead of 30 — saving <b>$411,388 in interest</b>. The M1 washing machine funnels their income daily against the balance. Annual sweep cycles target the largest sub first, then eliminate the remaining balance years ahead of schedule. <em>⚠ These projections are FMFS estimates based on income data from the commitment letter. Confirm with official Manulife calculator report when available.</em>`,
+    cycles: [
+      {label:"♻ Cycles",       val:"6–8",    sub:"sweep events"},
+      {label:"⏱ Sub-2 Done",   val:"~6 yrs", sub:"eliminated early"},
+      {label:"$ Total Saved",  val:"$411K",  sub:"in interest"},
+      {label:"📅 Debt-Free",   val:"9 yrs",  sub:"vs 30 yrs standard"}
+    ]
+  },
+
+  // ─────────────────────────────────────────────────────────────────
+  //  NATALIE DAVEY & CASERT BERNARD  |  Ref #1088312  |  Brantford ON
+  //  ⚠ FMFS Computed Estimates — Manulife report not yet provided
+  // ─────────────────────────────────────────────────────────────────
+  davey: {
+    name: "Natalie Davey & Casert Bernard",
+    property: "Brantford, ON",
+    refNum: "1088312",
+    expiry: "Dec 31, 2030",
+    dealType: "Refinance",
+    estimated: true,
+    m1Total: 659200,
+    helocBalance: 112600,
+    helocRate: 0.0520,
+    subs: [
+      { name:"Sub-1",    bal:170000, rate:0.0449, payment:997.52,  readvanceable:false },
+      { name:"Sub-2 ⭐", bal:376600, rate:0.0449, payment:2209.80, readvanceable:true  }
+    ],
+    income: 11000,
+    expenses: 4500,
+    comp: { label:"Standard Mortgage est. @ 5.25%", bal:659200, rate:0.0525, pmt:3617 },
+    official: {
+      m1Int:111106, m1Yrs:8, compInt:642951, compYrs:30, saved:531845
+    },
+    m1Sch: [
+      {yr:1,bal:571054,int:28342},{yr:2,bal:478985,int:24418},{yr:3,bal:382847,int:20350},
+      {yr:4,bal:282492,int:16133},{yr:5,bal:177767,int:11763},{yr:6,bal:83730,int:7069},
+      {yr:7,bal:8511,int:2781},{yr:8,bal:0,int:249}
+    ],
+    compSch: [
+      {yr:1,bal:649809},{yr:2,bal:639918},{yr:3,bal:629502},{yr:4,bal:618531},
+      {yr:5,bal:606977},{yr:6,bal:594808},{yr:7,bal:581992},{yr:8,bal:568495},
+      {yr:9,bal:554279},{yr:10,bal:539307},{yr:11,bal:523539},{yr:12,bal:506933},
+      {yr:13,bal:489443},{yr:14,bal:471022},{yr:15,bal:451622},{yr:16,bal:431191},
+      {yr:17,bal:409672},{yr:18,bal:387009},{yr:19,bal:363140},{yr:20,bal:338002},
+      {yr:21,bal:311527},{yr:22,bal:283643},{yr:23,bal:254277},{yr:24,bal:223348},
+      {yr:25,bal:190774},{yr:26,bal:156468},{yr:27,bal:120337},{yr:28,bal:82285},
+      {yr:29,bal:42208},{yr:30,bal:0}
+    ],
+    freedomM1: {mo:"Dec", yr:2033}, freedomComp: {mo:"Dec", yr:2055},
+    narrative: `Natalie and Casert eliminate their <b>$659,200 mortgage in just 8 years</b> instead of 30 — saving an estimated <b>$531,845 in interest</b>. With $6,500/month flowing through the M1 account, the HELOC balance drops fast, unlocking powerful annual sweep cycles that destroy debt at an accelerating pace. <em>⚠ These projections are FMFS estimates based on income data from the commitment letter. Confirm with official Manulife calculator report when available.</em>`,
+    cycles: [
+      {label:"♻ Cycles",       val:"5–7",    sub:"sweep events"},
+      {label:"⏱ Sub-2 Done",   val:"~5 yrs", sub:"eliminated early"},
+      {label:"$ Total Saved",  val:"$532K",  sub:"in interest"},
+      {label:"📅 Debt-Free",   val:"8 yrs",  sub:"vs 30 yrs standard"}
+    ]
+  },
+
+  // ─────────────────────────────────────────────────────────────────
+  //  JASON ABERGEL  |  M1 Report: June 17, 2026  |  Rental Property
+  //  Source: Manulife Bank Official Calculator
+  // ─────────────────────────────────────────────────────────────────
+  abergel: {
+    name: "Jason Abergel",
+    property: "Rental Property",
+    refNum: "Jun 17, 2026",
+    expiry: "Manulife One Account",
+    dealType: "Switch to M1 · Rental",
+    m1Total: 161417,
+    helocBalance: 161417,
+    helocRate: 0.0495,
+    subs: [],
+    income: 2400,
+    expenses: 785,
+    comp: { label:"Existing Mortgage @ 3.78%", bal:161417, rate:0.0378, pmt:953 },
+    official: {
+      m1Int:46826, m1Yrs:11, compInt:68309, compYrs:20.17, saved:21484
+    },
+    m1Sch: [
+      {yr:1,bal:151386,int:7620},{yr:2,bal:139252,int:7043},{yr:3,bal:126513,int:6437},
+      {yr:4,bal:113137,int:5801},{yr:5,bal:99094,int:5133},{yr:6,bal:84349,int:4432},
+      {yr:7,bal:68869,int:3696},{yr:8,bal:52615,int:2923},{yr:9,bal:35550,int:2111},
+      {yr:10,bal:17632,int:1259},{yr:11,bal:0,int:370}
+    ],
+    compSch: [
+      {yr:1,bal:155924},{yr:2,bal:150220},{yr:3,bal:144300},{yr:4,bal:138153},
+      {yr:5,bal:131772},{yr:6,bal:125147},{yr:7,bal:118270},{yr:8,bal:111130},
+      {yr:9,bal:103718},{yr:10,bal:96023},{yr:11,bal:88034},{yr:12,bal:79740},
+      {yr:13,bal:71130},{yr:14,bal:62192},{yr:15,bal:52912},{yr:16,bal:43278},
+      {yr:17,bal:33277},{yr:18,bal:22894},{yr:19,bal:12115},{yr:20,bal:925},
+      {yr:21,bal:0}
+    ],
+    freedomM1: {mo:"Jun", yr:2037}, freedomComp: {mo:"Aug", yr:2046},
+    narrative: `Jason clears his rental property mortgage in <b>11 years instead of 20</b> — saving <b>$21,484 in interest</b> and nearly a decade of payments. With a clean M1 setup and $1,615/month surplus flowing through the account, the daily balance reduction does the heavy lifting. No sub-accounts needed — the full mortgage lives in the flexible Main Account.`,
+    cycles: [
+      {label:"⚡ Daily Impact",    val:"$1,615/mo", sub:"surplus applied daily"},
+      {label:"$ Interest Saved",  val:"$21,484",   sub:"vs existing mortgage"},
+      {label:"📅 Debt-Free",      val:"11 yrs",    sub:"vs 20 yrs, 2 mo"},
+      {label:"🏠 Credit Room",    val:"$337,783",  sub:"available after payoff"}
+    ]
+  },
+
+  // ─────────────────────────────────────────────────────────────────
+  //  RYAN BIGNELL & MARIA JOSE MEDINA DIAZ  |  M1 Report: May 13, 2026
+  //  Source: Manulife Bank Official Calculator
+  // ─────────────────────────────────────────────────────────────────
+  bignell: {
+    name: "Ryan Bignell & Maria J. Medina Diaz",
+    property: "Property — $429,000",
+    refNum: "May 13, 2026",
+    expiry: "Manulife One Account",
+    dealType: "Switch to M1",
+    m1Total: 320946,
+    helocBalance: 279054,
+    helocRate: 0.0495,
+    subs: [
+      { name:"Sub-1", bal:41893, rate:0.0494, payment:328.89, readvanceable:false }
+    ],
+    income: 4000,
+    expenses: 1280,
+    comp: { label:"Existing Mortgage @ 3.45%", bal:318000, rate:0.0345, pmt:1675 },
+    official: {
+      m1Int:116241, m1Yrs:15, compInt:140275, compYrs:22.83, saved:24033
+    },
+    m1Sch: [
+      {yr:1,bal:303469,int:15163},{yr:2,bal:285332,int:14300},{yr:3,bal:266290,int:13394},
+      {yr:4,bal:246296,int:12443},{yr:5,bal:225305,int:11445},{yr:6,bal:203265,int:10397},
+      {yr:7,bal:180124,int:9296},{yr:8,bal:155828,int:8140},{yr:9,bal:130318,int:6927},
+      {yr:10,bal:103535,int:5653},{yr:11,bal:75414,int:4316},{yr:12,bal:45888,int:2911},
+      {yr:13,bal:14888,int:1437},{yr:14,bal:3844,int:318},{yr:15,bal:0,int:103}
+    ],
+    compSch: [
+      {yr:1,bal:308633},{yr:2,bal:298941},{yr:3,bal:288911},{yr:4,bal:278532},
+      {yr:5,bal:267792},{yr:6,bal:256678},{yr:7,bal:245178},{yr:8,bal:233277},
+      {yr:9,bal:220963},{yr:10,bal:208219},{yr:11,bal:195033},{yr:12,bal:181387},
+      {yr:13,bal:167267},{yr:14,bal:152655},{yr:15,bal:137535},{yr:16,bal:121888},
+      {yr:17,bal:105697},{yr:18,bal:88943},{yr:19,bal:71606},{yr:20,bal:53665},
+      {yr:21,bal:35100},{yr:22,bal:15890},{yr:23,bal:0}
+    ],
+    freedomM1: {mo:"May", yr:2041}, freedomComp: {mo:"Mar", yr:2049},
+    narrative: `Ryan and Maria clear their mortgage in <b>15 years instead of nearly 23</b> — saving <b>$24,033 in interest</b> and 7 years, 10 months of payments. Their $2,720/month surplus flows through the Main Account daily, steadily driving the balance down. Sub-1 runs its own fixed track while the HELOC does the accelerating work.`,
+    cycles: [
+      {label:"⚡ Daily Impact",    val:"$2,720/mo", sub:"surplus applied daily"},
+      {label:"$ Interest Saved",  val:"$24,033",   sub:"vs existing mortgage"},
+      {label:"📅 Debt-Free",      val:"15 yrs",    sub:"vs 22 yrs, 10 mo"},
+      {label:"🏠 Home Value",     val:"$429,000",  sub:"Brantford area property"}
+    ]
+  }
+};
+
+// ════════════════════════════════════════════════════════
+//  MATH ENGINE — Computes from first principles
+// ════════════════════════════════════════════════════════
+function subMonthlyRate(annualSemiAnnual) {
+  return Math.pow(1 + annualSemiAnnual / 2, 1/6) - 1;
+}
+
+function computeM1(c, income, expenses) {
+  const helocRate = c.helocRate / 12;
+  const subRates = c.subs.map(s => subMonthlyRate(s.rate));
+  let helocBal = c.helocBalance;
+  let subBals = c.subs.map(s => s.bal);
+  const subPmts = c.subs.map(s => s.pmt);
+  const surplus = income - expenses - subPmts.reduce((a,b) => a+b, 0);
+  const ADMIN = 16.95;
+
+  let totalInt = 0; let month = 0; const yearlyData = [];
+  let yearInt = 0; let yearStart = helocBal + subBals.reduce((a,b)=>a+b,0);
+  // Track readvanceable room
+  let readvRoom = 0;
+
+  while (month < 600) {
+    month++;
+    // HELOC interest
+    const hInt = Math.max(0, helocBal) * helocRate;
+    helocBal += hInt + ADMIN;
+    totalInt += hInt + ADMIN;
+    yearInt += hInt + ADMIN;
+
+    // Sub-account payments
+    for (let i = 0; i < subBals.length; i++) {
+      if (subBals[i] <= 0) continue;
+      const sInt = subBals[i] * subRates[i];
+      const sPrin = Math.min(subPmts[i] - sInt, subBals[i]);
+      totalInt += sInt; yearInt += sInt;
+      subBals[i] -= sPrin;
+      if (c.subs[i].readv) readvRoom += sPrin;
+    }
+
+    // Apply surplus to HELOC
+    helocBal -= surplus;
+
+    // Sweep: when HELOC hits 0 and there's readvanceable room
+    if (helocBal <= 0 && readvRoom > 1) {
+      const sweep = Math.min(readvRoom, subBals.reduce((a,b)=>a+b,0));
+      // Apply sweep to readvanceable sub(s)
+      for (let i = 0; i < subBals.length; i++) {
+        if (c.subs[i].readv && subBals[i] > 0) {
+          const apply = Math.min(sweep, subBals[i]);
+          subBals[i] -= apply;
+          helocBal += apply; // re-borrow this amount
+          break;
+        }
+      }
+      readvRoom = 0;
+    }
+
+    // Clamp
+    helocBal = Math.max(0, helocBal);
+    for (let i = 0; i < subBals.length; i++) subBals[i] = Math.max(0, subBals[i]);
+
+    // Year-end snapshot
+    if (month % 12 === 0) {
+      const totalBal = helocBal + subBals.reduce((a,b)=>a+b,0);
+      yearlyData.push({ yr: month/12, bal: Math.round(totalBal), int: Math.round(yearInt) });
+      yearInt = 0; yearStart = totalBal;
+      if (totalBal < 0.01) break;
+    }
+  }
+
+  return { months: month, years: month/12, totalInt: Math.round(totalInt), schedule: yearlyData };
+}
+
+function computeComp(c) {
+  const mRate = subMonthlyRate(c.comp.rate);
+  let bal = c.comp.bal;
+  const pmt = c.comp.pmt;
+  let totalInt = 0; let month = 0; const yearly = [];
+  let yearInt = 0;
+  while (bal > 0.01 && month < 600) {
+    month++;
+    const int = bal * mRate;
+    bal -= (pmt - int);
+    totalInt += int; yearInt += int;
+    if (bal < 0) bal = 0;
+    if (month % 12 === 0) {
+      yearly.push({ yr: month/12, bal: Math.round(bal), int: Math.round(yearInt) });
+      yearInt = 0;
+      if (bal < 0.01) break;
+    }
+  }
+  return { months: month, years: month/12, totalInt: Math.round(totalInt), schedule: yearly };
+}
+
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+let ACTIVE = 'marlye';
+let C = CLIENTS.marlye;
+let currentStep = 0;
+
+// ════════════════════════════════════════════════════════
+//  CLIENT SWITCH
+// ════════════════════════════════════════════════════════
+function switchClient(id) {
+  ACTIVE = id; C = CLIENTS[id];
+  document.getElementById('expiry-date').textContent = C.expiry;
+  document.getElementById('ref-num').textContent = C.refNum;
+  document.getElementById('deal-pill').textContent = C.dealType;
+  // Show/hide estimated data banner
+  const estBanner = document.getElementById('est-banner');
+  const srcLabel  = document.getElementById('source-label');
+  if (C.estimated) {
+    estBanner.style.display = 'flex';
+    srcLabel.textContent = 'Source: FMFS Computed Estimates ⚠';
+    srcLabel.style.color = '#b45309';
+  } else {
+    estBanner.style.display = 'none';
+    srcLabel.textContent = 'Source: Manulife Bank Official Calculator';
+    srcLabel.style.color = '';
+  }
+  // Reset sliders
+  document.getElementById('sl-income').value = C.income;
+  document.getElementById('sl-exp').value = C.expenses;
+  onSlider();
+  renderAll();
+}
+
+// ════════════════════════════════════════════════════════
+//  SLIDERS
+// ════════════════════════════════════════════════════════
+function onSlider() {
+  const income = +document.getElementById('sl-income').value;
+  const exp = +document.getElementById('sl-exp').value;
+  document.getElementById('lbl-income').textContent = '$' + income.toLocaleString();
+  document.getElementById('lbl-exp').textContent = '$' + exp.toLocaleString();
+  const subPmts = C.subs.reduce((s,x) => s+x.pmt, 0);
+  const surplus = income - exp - subPmts;
+  document.getElementById('lbl-surplus').textContent = surplus > 0 ? '$' + Math.round(surplus).toLocaleString() : '$0';
+  // HELOC payoff estimate
+  if (surplus > 0 && C.helocBalance > 1) {
+    const r = C.helocRate / 12;
+    const n = -Math.log(1 - C.helocBalance * r / surplus) / Math.log(1 + r);
+    document.getElementById('lbl-heloc-payoff').textContent = isFinite(n) ? '~' + Math.ceil(n) + ' months' : 'N/A';
+  } else if (C.helocBalance <= 1) {
+    document.getElementById('lbl-heloc-payoff').textContent = 'HELOC starts empty';
+  } else {
+    document.getElementById('lbl-heloc-payoff').textContent = 'Increase income';
+  }
+  drawChart();
+}
+
+// ════════════════════════════════════════════════════════
+//  RENDER ALL
+// ════════════════════════════════════════════════════════
+function renderAll() {
+  const o = C.official;
+  // Blended M1 rate
+  const totalSub = C.subs.reduce((s,x)=>s+x.bal,0);
+  const blended = ((C.helocBalance*C.helocRate + C.subs.reduce((s,x)=>s+x.bal*x.rate,0)) / C.m1Total * 100).toFixed(2);
+  document.getElementById('rate-m1').textContent = blended + '%';
+  document.getElementById('rate-comp').textContent = (C.comp.rate*100).toFixed(2) + '%';
+  document.getElementById('rate-comp-lbl').textContent = C.comp.label;
+  document.getElementById('rate-note-saved').textContent = '$' + o.saved.toLocaleString();
+  document.getElementById('rate-explain-saved').textContent = '$' + o.saved.toLocaleString();
+
+  // Hero
+  const clientFirst = C.name.split(' ')[0];
+  const timeSaved = (o.compYrs - o.m1Yrs);
+  const mosSaved = Math.round(timeSaved * 12);
+  document.getElementById('hero-text').textContent =
+    `${clientFirst} pays off their mortgage ${mosSaved > 11 ? (timeSaved).toFixed(1)+' years' : mosSaved+' months'} faster and saves $${o.saved.toLocaleString()} in interest`;
+  document.getElementById('hero-sub').textContent = `Net savings · Ref #${C.refNum} · Source: Manulife Bank Official Calculator`;
+
+  // Timeline
+  document.getElementById('tc-m1').textContent = formatYrs(o.m1Yrs);
+  document.getElementById('tc-m1-sub').textContent = `Debt-free: ~${C.freedomM1.mo} ${C.freedomM1.yr}`;
+  document.getElementById('tc-comp-lbl').textContent = '🏛 ' + C.comp.label.split(' ')[0];
+  document.getElementById('tc-comp').textContent = formatYrs(o.compYrs);
+  document.getElementById('tc-comp-sub').textContent = `Debt-free: ~${C.freedomComp.mo} ${C.freedomComp.yr}`;
+  document.getElementById('tc-saved').textContent = '$' + o.saved.toLocaleString();
+  document.getElementById('tc-saved-sub').textContent = `$${o.m1Int.toLocaleString()} vs $${o.compInt.toLocaleString()}`;
+  document.getElementById('tl-narrative').innerHTML = C.narrative;
+
+  // Metrics
+  const pct = Math.round((timeSaved / o.compYrs) * 100);
+  document.getElementById('m-time').textContent = timeSaved >= 2 ? timeSaved.toFixed(1) + ' yrs' : Math.round(timeSaved*12) + ' mo';
+  document.getElementById('m-time-sub').textContent = 'faster to mortgage freedom';
+  document.getElementById('m-accel').textContent = pct + '%';
+  document.getElementById('m-accel-sub').textContent = 'faster than ' + C.comp.label.split(' ')[0];
+  document.getElementById('pb-time').style.width = Math.min(pct * 2, 100) + '%';
+  document.getElementById('pb-accel').style.width = Math.min(pct * 2, 100) + '%';
+
+  // Chart label
+  document.getElementById('chart-comp-label').textContent = C.comp.label;
+  document.getElementById('hth-comp-header').textContent = C.comp.label.split(' @')[0];
+  document.getElementById('amort-comp-header').textContent = C.comp.label.split(' @')[0];
+
+  // HTH table
+  buildHTH();
+  // Amort table
+  buildAmort();
+  // How It Works
+  renderFreedomDates();
+  // Steps
+  currentStep = 0; renderStep();
+  // Cycles
+  buildCycles();
+  // Chart
+  drawChart();
+  // Validation
+  buildValidation();
+  // All clients
+  buildAllClients();
+}
+
+function formatYrs(y) {
+  const yrs = Math.floor(y);
+  const mos = Math.round((y - yrs) * 12);
+  return mos > 0 ? `${yrs} yrs ${mos} mo` : `${yrs} yrs`;
+}
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+
+// ════════════════════════════════════════════════════════
+//  HEAD-TO-HEAD
+// ════════════════════════════════════════════════════════
+function buildHTH() {
+  const o = C.official;
+  const subPmt = C.subs.reduce((s,x)=>s+x.pmt,0).toFixed(2);
+  const rows = [
+    ['Monthly M1 Sub Payments', fmt(subPmt), fmt(C.comp.pmt), false],
+    ['Total Interest Paid', fmt(o.m1Int), fmt(o.compInt), true],
+    ['Mortgage Freedom', formatYrs(o.m1Yrs), formatYrs(o.compYrs), true],
+    ['Lender', 'Manulife One', C.comp.label.split(' @')[0], false],
+    ['Interest Saved', `${fmt(o.saved)} in ${clientFirst()}'s pocket`, '—', true],
+  ];
+  document.getElementById('hth-body').innerHTML = rows.map(([metric, m1, comp, win]) => `
+    <tr>
+      <td class="hth-metric">${metric}</td>
+      <td class="hth-m1">${m1} ${win ? '<span class="badge-win">✓ WINS</span>' : ''}</td>
+      <td class="hth-comp">${comp}</td>
+    </tr>`).join('');
+}
+
+function clientFirst() { return C.name.split(' ')[0]; }
+
+// ════════════════════════════════════════════════════════
+//  AMORTIZATION TABLE
+// ════════════════════════════════════════════════════════
+function buildAmort() {
+  const maxYr = Math.max(C.m1Sch[C.m1Sch.length-1].yr, C.compSch[C.compSch.length-1].yr);
+  let m1Cum = 0; let cCum = 0;
+  let html = '';
+  for (let yr = 1; yr <= maxYr; yr++) {
+    const m1 = C.m1Sch.find(r=>r.yr===yr);
+    const co = C.compSch.find(r=>r.yr===yr);
+    if (!m1 && !co) continue;
+    m1Cum += m1 ? m1.int : 0;
+    const cInt = co ? Math.round((co.bal||0) * 0.045) : 0; // approx for display
+    cCum += cInt;
+    const m1Bal = m1 ? m1.bal : 0;
+    const cBal = co ? co.bal : 0;
+    const adv = cBal - m1Bal;
+    const isFree = m1 && m1.bal === 0;
+    html += `<tr${isFree?' class="row-free"':''}>
+      <td class="yr-col">Yr ${yr}</td>
+      <td class="m1-bal">${m1 ? fmt(m1.bal) : '🎉 FREE'}</td>
+      <td>${m1 ? fmt(m1.int) : '—'}</td>
+      <td style="border-right:2px solid #eee">${m1 ? fmt(m1Cum) : '—'}</td>
+      <td class="comp-bal">${co ? fmt(co.bal) : (cBal===0?'🎉 FREE':'—')}</td>
+      <td>${cInt>0?fmt(cInt):'—'}</td>
+      <td>${cCum>0?fmt(cCum):'—'}</td>
+      <td class="adv-col${adv>0?' '+'':''}">
+        ${m1 && m1.bal===0 && cBal>0 ? '<span style="color:#15803d">M1 DONE ✓</span>' : (adv>0?'+'+fmt(adv):'—')}
+      </td>
+    </tr>`;
+  }
+  document.getElementById('amort-body').innerHTML = html;
+  document.getElementById('amort-note').textContent =
+    `Source: Manulife Bank Official Calculator — Ref #${C.refNum}. Comparison interest estimated for display. For exact comparison schedule see your commitment letter or renewal offer.`;
+}
+
+// ════════════════════════════════════════════════════════
+//  CYCLES GRID
+// ════════════════════════════════════════════════════════
+function buildCycles() {
+  document.getElementById('cycles-grid').innerHTML = C.cycles.map(c=>`
+    <div class="cy-stat">
+      <div class="cy-lbl">${c.label}</div>
+      <div class="cy-val">${c.val}</div>
+      <div class="cy-sub">${c.sub}</div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  HOW IT WORKS
+// ════════════════════════════════════════════════════════
+function renderFreedomDates() {
+  const o = C.official;
+  document.getElementById('fd-comp-mo').textContent = C.freedomComp.mo;
+  document.getElementById('fd-comp-yr').textContent = C.freedomComp.yr;
+  document.getElementById('fd-m1-mo').textContent = C.freedomM1.mo;
+  document.getElementById('fd-m1-yr').textContent = C.freedomM1.yr;
+  const mosSaved = Math.round((o.compYrs - o.m1Yrs) * 12);
+  document.getElementById('fd-m1-sub').textContent = mosSaved + ' months earlier';
+  document.getElementById('fs-time').innerHTML =
+    (o.compYrs - o.m1Yrs).toFixed(1) + ' yrs <span style="font-size:13px;font-weight:600;">faster</span>';
+  document.getElementById('fs-time-sub').textContent = `${C.freedomM1.mo} ${C.freedomM1.yr} vs ${C.freedomComp.mo} ${C.freedomComp.yr}`;
+  document.getElementById('fs-saved').textContent = '$' + o.saved.toLocaleString();
+}
+
+function buildSteps() {
+  const subTotal = '$' + Math.round(C.m1Total).toLocaleString();
+  const helocAmt = '$' + Math.round(C.helocBalance).toLocaleString();
+  const subLines = C.subs.map(s =>
+    `<div class="sv-box pur"><div class="sv-lbl">${s.name} ${s.readv?'(Re-adv)':'(Non re-adv)'}</div><div class="sv-val">${fmt(s.bal)}</div><div class="sv-sub">${(s.rate*100).toFixed(2)}% · ${fmt(s.pmt)}/mo</div></div>`
+  ).join('');
+  return [
+    {
+      badge:'STEP 1 — YOUR MORTGAGE, RESTRUCTURED', icon:'🏗',
+      h:`Total: ${subTotal} — split into ${C.subs.length + 1} components`,
+      p:`Your mortgage is divided into a Main Account (HELOC) that acts as your everyday bank account, plus fixed sub-accounts that amortize on schedule. Three tracks, one powerful structure.`,
+      vis:`<div class="sv-box org"><div class="sv-lbl">Main Account (HELOC)</div><div class="sv-val">${helocAmt}</div><div class="sv-sub">4.95% · Your daily banking</div></div>${subLines}`
+    },
+    {
+      badge:'STEP 2 — PAYCHEQUE GOES IN', icon:'💵',
+      h:`Your $${Math.round(C.income).toLocaleString()} paycheque hits the Main Account`,
+      p:`The moment your salary deposits, the HELOC balance drops instantly. Interest is charged daily on whatever the balance is — so even a few days at a lower balance saves real money. Compounded over months and years, it adds up fast.`,
+      vis:`<div class="sv-box org"><div class="sv-lbl">Before paycheque</div><div class="sv-val">${helocAmt}</div><div class="sv-sub">HELOC balance</div></div>
+           <div class="sv-box grn"><div class="sv-lbl">After paycheque</div><div class="sv-val">↓ Lower</div><div class="sv-sub">Interest saving starts immediately</div></div>
+           <div class="sv-box grn"><div class="sv-lbl">Interest charged on</div><div class="sv-val">Less</div><div class="sv-sub">Every. Single. Day.</div></div>`
+    },
+    {
+      badge:'STEP 3 — SURPLUS CHIPS AWAY', icon:'📉',
+      h:'Month after month, the HELOC keeps falling',
+      p:`Every month, $${Math.round(C.income - C.expenses - C.subs.reduce((s,x)=>s+x.pmt,0)).toLocaleString()} in surplus stays behind and reduces the Main Account balance. The HELOC never recovers to its starting balance — it only goes down.`,
+      vis:`<div class="sv-box org"><div class="sv-lbl">Month 1</div><div class="sv-val">Falling</div><div class="sv-sub">Surplus stays</div></div>
+           <div class="sv-box org"><div class="sv-lbl">Month 6</div><div class="sv-val">Lower</div><div class="sv-sub">Still declining</div></div>
+           <div class="sv-box grn"><div class="sv-lbl">Payoff</div><div class="sv-val">$0</div><div class="sv-sub">HELOC cleared ✓</div></div>`
+    },
+    {
+      badge:'STEP 4 — SWEEP & REPEAT', icon:'♻️',
+      h:'Same money owed. Way better structure.',
+      p:C.subs.some(s=>s.readv)
+        ? `When the HELOC reaches $0, the principal paid on the readvanceable sub-account (Sub-2) opens up as available credit. That room is drawn as a lump sum and applied directly to Sub-2's balance — dramatically accelerating the paydown. Then the cycle begins again.`
+        : `When the HELOC reaches $0, all ${fmt(C.helocBalance)} of credit becomes available. That room can be drawn and applied as a lump sum directly to the sub-account at renewal or any time. Total debt is the same — but the structure is far more efficient.`,
+      vis:`<div class="sv-box grn"><div class="sv-lbl">HELOC Balance</div><div class="sv-val">$0</div><div class="sv-sub">Fully paid ✓</div></div>
+           <div class="sv-box pur"><div class="sv-lbl">Lump Sum Available</div><div class="sv-val">${helocAmt}+</div><div class="sv-sub">Applied to sub-account</div></div>
+           <div class="sv-box grn"><div class="sv-lbl">Sub-Account</div><div class="sv-val">Much Less</div><div class="sv-sub">Balance drops significantly</div></div>`
+    },
+    {
+      badge:'STEP 5 — DEBT-FREE DATE', icon:'🎯',
+      h:`Freedom: ${C.freedomM1.mo} ${C.freedomM1.yr}`,
+      p:`vs ${C.freedomComp.mo} ${C.freedomComp.yr} the traditional way. That's ${Math.round((C.official.compYrs - C.official.m1Yrs)*12)} months of payments that never have to be made — and $${C.official.saved.toLocaleString()} that stays in ${clientFirst()}'s pocket.`,
+      vis:`<div class="sv-box grn"><div class="sv-lbl">With Manulife One</div><div class="sv-val">${C.freedomM1.yr}</div><div class="sv-sub">${formatYrs(C.official.m1Yrs)}</div></div>
+           <div class="sv-box org"><div class="sv-lbl">Traditional Way</div><div class="sv-val">${C.freedomComp.yr}</div><div class="sv-sub">${formatYrs(C.official.compYrs)}</div></div>
+           <div class="sv-box grn"><div class="sv-lbl">Interest Saved</div><div class="sv-val">${fmt(C.official.saved)}</div><div class="sv-sub">Yours to keep</div></div>`
+    }
+  ];
+}
+
+let STEPS = [];
+function renderStep() {
+  STEPS = buildSteps();
+  const s = STEPS[currentStep];
+  const dotsHtml = STEPS.map((_,i)=>`<div class="wt-dot${i===currentStep?' active':''}" onclick="goStep(${i})"></div>`).join('');
+  document.getElementById('wt-dots').innerHTML = dotsHtml;
+  document.getElementById('wt-body').innerHTML = `
+    <div class="step-badge">● ${s.badge}</div>
+    <div class="step-icon">${s.icon}</div>
+    <div class="step-h">${s.h}</div>
+    <div class="step-p">${s.p}</div>
+    <div class="step-vis">${s.vis}</div>
+    <button class="step-next" onclick="nextStep()" ${currentStep===STEPS.length-1?'disabled':''}>
+      ${currentStep===STEPS.length-1 ? '✓ Complete — see your numbers above' : 'Next Step →'}
+    </button>`;
+}
+function nextStep() { if(currentStep<STEPS.length-1){currentStep++;renderStep();} }
+function goStep(i) { currentStep=i; renderStep(); }
+
+// ════════════════════════════════════════════════════════
+//  CHART
+// ════════════════════════════════════════════════════════
+function drawChart() {
+  const canvas = document.getElementById('balChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.parentElement.clientWidth - 36;
+  const h = 240;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  canvas.style.width = w+'px'; canvas.style.height = h+'px';
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0,0,w,h);
+
+  const maxYrs = Math.max(C.m1Sch[C.m1Sch.length-1].yr, C.compSch[C.compSch.length-1].yr) + 1;
+  const maxBal = Math.max(C.m1Total, C.comp.bal) * 1.05;
+  const pad = {top:12,right:14,bottom:32,left:54};
+  const gw = w - pad.left - pad.right, gh = h - pad.top - pad.bottom;
+
+  function xp(yr) { return pad.left + (yr/maxYrs)*gw; }
+  function yp(bal) { return pad.top + gh - (bal/maxBal)*gh; }
+
+  // Grid
+  ctx.strokeStyle='#f0f0f0'; ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=pad.top+(i/4)*gh;
+    ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(pad.left+gw,y);ctx.stroke();
+    ctx.fillStyle='#aaa';ctx.font=`10px Arial`;ctx.textAlign='right';
+    ctx.fillText('$'+Math.round(maxBal*(1-i/4)/1000)+'K',pad.left-4,y+4);
+  }
+  // X labels
+  ctx.fillStyle='#aaa';ctx.textAlign='center';
+  const step = maxYrs <= 15 ? 2 : maxYrs <= 22 ? 3 : 5;
+  for(let yr=0;yr<=maxYrs;yr+=step) ctx.fillText('Yr '+yr,xp(yr),h-6);
+
+  // Comp line (dashed red)
+  ctx.strokeStyle='#dc2626';ctx.lineWidth=2;ctx.setLineDash([4,3]);
+  ctx.beginPath();ctx.moveTo(xp(0),yp(C.comp.bal));
+  C.compSch.forEach(d=>ctx.lineTo(xp(d.yr),yp(Math.max(0,d.bal))));
+  ctx.stroke();
+
+  // M1 line (purple solid)
+  ctx.strokeStyle='#264283';ctx.lineWidth=3;ctx.setLineDash([]);/* 8Twelve Blue */
+  ctx.beginPath();ctx.moveTo(xp(0),yp(C.m1Total));
+  C.m1Sch.forEach(d=>ctx.lineTo(xp(d.yr),yp(Math.max(0,d.bal))));
+  ctx.stroke();
+
+  // M1 payoff dot
+  const m1End = C.m1Sch[C.m1Sch.length-1];
+  ctx.fillStyle='#db9247';/* 8Twelve Gold */
+  ctx.beginPath();ctx.arc(xp(m1End.yr),yp(0),6,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#264283';ctx.font='bold 10px Arial';ctx.textAlign='center';
+  ctx.fillText('M1 Free ✓',xp(m1End.yr),yp(0)-12);
+}
+
+// ════════════════════════════════════════════════════════
+//  VALIDATION / STRESS TEST
+// ════════════════════════════════════════════════════════
+function buildValidation() {
+  const o = C.official;
+  const computed = computeM1(C, C.income, C.expenses);
+  const compComp = computeComp(C);
+
+  document.getElementById('val-client-name').textContent = C.name;
+
+  // Summary comparison
+  const m1IntDiff = Math.abs(computed.totalInt - o.m1Int) / o.m1Int * 100;
+  const m1YrDiff = Math.abs(computed.years - o.m1Yrs) / o.m1Yrs * 100;
+  const cIntDiff = Math.abs(compComp.totalInt - o.compInt) / o.compInt * 100;
+
+  function badge(pct) {
+    if(pct < 5) return `<div class="vi-off good">✓ ${pct.toFixed(1)}% off</div>`;
+    if(pct < 12) return `<div class="vi-off ok">~${pct.toFixed(1)}% off</div>`;
+    return `<div class="vi-off warn">⚠ ${pct.toFixed(1)}% off</div>`;
+  }
+
+  document.getElementById('val-grid').innerHTML = `
+    <div class="val-item"><div class="vi-lbl">M1 Total Interest</div>
+      <div style="font-size:11px;color:#555;">Official: ${fmt(o.m1Int)}</div>
+      <div style="font-size:11px;color:#555;">Computed: ${fmt(computed.totalInt)}</div>
+      ${badge(m1IntDiff)}</div>
+    <div class="val-item"><div class="vi-lbl">M1 Years to Freedom</div>
+      <div style="font-size:11px;color:#555;">Official: ${o.m1Yrs} yrs</div>
+      <div style="font-size:11px;color:#555;">Computed: ${computed.years.toFixed(1)} yrs</div>
+      ${badge(m1YrDiff)}</div>
+    <div class="val-item"><div class="vi-lbl">Comparison Interest</div>
+      <div style="font-size:11px;color:#555;">Official: ${fmt(o.compInt)}</div>
+      <div style="font-size:11px;color:#555;">Computed: ${fmt(compComp.totalInt)}</div>
+      ${badge(cIntDiff)}</div>`;
+
+  // Year-by-year table
+  const maxYr = Math.max(
+    C.m1Sch[C.m1Sch.length-1].yr,
+    computed.schedule.length > 0 ? computed.schedule[computed.schedule.length-1].yr : 0
+  );
+  let html = '';
+  for(let yr=1; yr<=maxYr; yr++) {
+    const off = C.m1Sch.find(r=>r.yr===yr);
+    const comp = computed.schedule.find(r=>r.yr===yr);
+    if(!off && !comp) continue;
+    const offBal = off ? off.bal : 0;
+    const compBal = comp ? comp.bal : 0;
+    const diff = off && comp ? Math.abs(offBal - compBal) : null;
+    const pct = off && comp && off.bal > 0 ? (diff/off.bal*100) : null;
+    const cls = pct===null ? '' : pct < 5 ? 'style="color:#15803d"' : pct < 12 ? 'style="color:#d97706"' : 'style="color:#dc2626"';
+    html += `<tr style="border-bottom:1px solid #f0f0f0">
+      <td style="padding:7px 10px;font-weight:600;color:#264283">Yr ${yr}</td>
+      <td style="padding:7px 10px;text-align:right;color:#15803d;font-weight:600">${off?fmt(off.bal):'FREE'}</td>
+      <td style="padding:7px 10px;text-align:right;color:#264283">${comp?fmt(comp.bal):'FREE'}</td>
+      <td style="padding:7px 10px;text-align:right" ${cls}>${diff!==null?fmt(diff)+(pct?' ('+pct.toFixed(1)+'%)':''):'—'}</td>
+      <td style="padding:7px 10px;text-align:right;color:#555">${off?fmt(off.int):'—'}</td>
+      <td style="padding:7px 10px;text-align:right;color:#264283">${comp?fmt(comp.int):'—'}</td>
+    </tr>`;
+  }
+  document.getElementById('val-table-body').innerHTML = html;
+}
+
+function buildAllClients() {
+  const html = Object.entries(CLIENTS).map(([id, cl]) => {
+    const o = cl.official;
+    const active = id === ACTIVE;
+    return `<tr style="border-bottom:1px solid #f0f0f0;${active?'background:#edf2fb;font-weight:600;':''}">
+      <td style="padding:8px 10px;cursor:pointer;color:#264283" onclick="document.getElementById('clientSelect').value='${id}';switchClient('${id}')">${cl.name} ${active?'◀':''}</td>
+      <td style="padding:8px 10px;text-align:right">${fmt(cl.m1Total)}</td>
+      <td style="padding:8px 10px;text-align:right;font-size:11px;color:#888">${cl.comp.label}</td>
+      <td style="padding:8px 10px;text-align:right;color:#15803d;font-weight:600">${o.m1Yrs} yrs</td>
+      <td style="padding:8px 10px;text-align:right;color:#dc2626">${o.compYrs} yrs</td>
+      <td style="padding:8px 10px;text-align:right;color:#15803d;font-weight:700">${fmt(o.saved)}</td>
+      <td style="padding:8px 10px;text-align:right;font-size:11px">${cl.dealType}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('all-clients-body').innerHTML = html;
+}
+
+// ════════════════════════════════════════════════════════
+//  FAQ
+// ════════════════════════════════════════════════════════
+const FAQS = [
+  {ico:'💰',q:'Why does my paycheque need to go into the M1 account?',a:'Manulife One <strong>is</strong> your chequing account. The moment your salary hits, it reduces your HELOC balance — and interest is charged daily on whatever the balance is. Even three days at a lower balance saves money. Over years, those daily savings compound into thousands of dollars.'},
+  {ico:'📉',q:'How does the daily interest offset actually work?',a:'A traditional mortgage charges interest on the full balance every day — period. Manulife One charges interest on whatever your Main Account balance is at end of day. Your paycheque drops that balance for weeks before your bills come out. You pay interest on a shrinking balance all month, not a static one.'},
+  {ico:'🔄',q:'What is a "readvanceable" sub-account?',a:'As you make mandatory payments on a readvanceable sub-account, the principal portion doesn\'t disappear — it becomes available credit in your Main Account. This is what powers the sweep strategy: you accumulate that room, then draw it as a lump sum and apply it directly to the sub-account balance, dramatically accelerating paydown.'},
+  {ico:'🏦',q:'How do I know when to do the sweep?',a:'Call Patrick before doing any sweep — he\'ll walk you through it. The sweep is typically done when the HELOC balance hits $0 and there\'s meaningful readvanceable room built up. Timing it wrong won\'t break anything, but timing it right maximizes the effect.'},
+  {ico:'📈',q:'What if interest rates go up?',a:'Your sub-account rates are locked for the 5-year term. Only the Main Account rate (4.95% variable) can change. Since the HELOC gets paid off in a fraction of the time, your exposure to rate increases on that portion is limited. You\'re actually in a better position than renewing a traditional mortgage at an unknown future rate.'},
+  {ico:'💳',q:'Do I need to change how I spend money?',a:'No. Spend exactly as you do today. The only change is where your money lives between payday and when you spend it. Instead of sitting in a chequing account earning nothing, it sits in Manulife One reducing your mortgage balance — saving you interest on every dollar, every day.'},
+  {ico:'🏠',q:'Can I still access my equity later in retirement?',a:'Yes — and this is a key advantage. Manulife approves your credit <strong>now</strong>, based on your current income. Once the account is open, the readvanceable room you create stays available permanently — without reapplying. In retirement with reduced income, qualifying for this credit would be much harder.'},
+  {ico:'❓',q:'Is this too good to be true?',a:'The math is real and verified by Manulife\'s own calculator. The key insight: <strong>it\'s not magic — it\'s structure</strong>. The same money, used differently. Your income has been flowing through a chequing account earning 0% while your mortgage charged 4–5%+ daily. Manulife One closes that gap. Patrick can walk you through the exact numbers for your situation.'},
+];
+
+document.getElementById('faq-list').innerHTML = FAQS.map((f,i)=>`
+  <div class="faq-item" id="faq-${i}">
+    <div class="faq-q" onclick="toggleFaq(${i})">
+      <div class="faq-ql"><div class="faq-ico">${f.ico}</div>${f.q}</div>
+      <span class="faq-arr">▾</span>
+    </div>
+    <div class="faq-a">${f.a}</div>
+  </div>`).join('');
+
+function toggleFaq(i) {
+  const el = document.getElementById('faq-'+i);
+  const open = el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(e=>e.classList.remove('open'));
+  if(!open) el.classList.add('open');
+}
+
+// ════════════════════════════════════════════════════════
+//  TABS & MISC
+// ════════════════════════════════════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='calculator') setTimeout(drawChart,50);
+  if(id==='validation') buildValidation();
+}
+
+function toggleRateNote() {
+  const el = document.getElementById('rate-explain');
+  el.style.display = el.style.display==='none'||!el.style.display ? 'block' : 'none';
+}
+
+window.addEventListener('resize', ()=> {
+  if(document.getElementById('tab-calculator').classList.contains('active')) drawChart();
+});
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+switchClient('marlye');
+</script>
+</body>
+</html>
