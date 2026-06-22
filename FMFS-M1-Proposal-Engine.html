@@ -514,7 +514,7 @@ canvas#balChart{width:100%;display:block;}
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" id="all-clients-card">
     <div style="font-size:12px;font-weight:700;color:#264283;margin-bottom:10px;">All Clients at a Glance</div>
     <table style="width:100%;border-collapse:collapse;font-size:12px;">
       <thead>
@@ -1414,9 +1414,29 @@ window.addEventListener('resize', ()=> {
 });
 
 // ════════════════════════════════════════════════════════
-//  INIT
+//  INIT — supports ?client=marlye&locked=1 URL params
 // ════════════════════════════════════════════════════════
-switchClient('marlye');
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const clientParam = params.get('client');
+  const locked = params.has('locked');
+  const startId = (clientParam && CLIENTS[clientParam]) ? clientParam : 'marlye';
+
+  if (locked) {
+    // Hide the client selector bar so the viewer can't switch clients
+    const bar = document.querySelector('.client-bar');
+    if (bar) bar.style.display = 'none';
+    // Hide the "All Clients at a Glance" summary card (shows all client data)
+    const allCard = document.getElementById('all-clients-card');
+    if (allCard) allCard.style.display = 'none';
+  }
+
+  // Sync the dropdown to the chosen client
+  const sel = document.getElementById('clientSelect');
+  if (sel) sel.value = startId;
+
+  switchClient(startId);
+})();
 </script>
 </body>
 </html>
